@@ -1,4 +1,4 @@
-import {useLoaderData, useParams} from '@remix-run/react';
+import {useLoaderData, useParams, Link} from '@remix-run/react';
 import {useContext, useEffect, useState} from 'react';
 import {Money} from '@shopify/hydrogen-react';
 import {MyContext} from '~/components/TalentContext';
@@ -22,24 +22,33 @@ export default function talentHome() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((e, i) => {
             e = e.node;
+            console.log(e)
             return (
-              <div className="relative bg-white p-4 rounded-lg shadow-md" key={i}>
-                <img
-                  src={e.featuredImage.url}
-                  alt="featuredImage"
-                  className="w-full h-40 object-cover mb-4"
-                />
-                <div className="text-sm font-semibold">{e.title}</div>
-                <div className="text-gray-600">
-                  <Money
-                    withoutTrailingZeros
-                    data={e.variants.edges[0].node.price}
-                    className="text-xl font-semibold mb-2"
+              <Link to={`/${talent}/${e.id.split('/')[4]}`} key={e.id}>
+                <div
+                  className="relative bg-white p-4 rounded-lg shadow-md"
+                  key={i}
+                >
+                  <img
+                    src={e.featuredImage.url}
+                    alt="featuredImage"
+                    className="w-full h-40 object-cover mb-4"
                   />
+                  <div className="text-sm font-semibold">{e.title}</div>
+                  <div className="text-gray-600">
+                    <Money
+                      withoutTrailingZeros
+                      data={e.variants.edges[0].node.price}
+                      className="text-xl font-semibold mb-2"
+                    />
+                  </div>
+                  <div className="py-2 px-4 text-white">a</div>
+                  <button className="absolute bottom-4 left-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full">
+                    {' '}
+                    Add to cart
+                  </button>
                 </div>
-                <div  className="py-2 px-4 text-white">a</div>
-                <button className="absolute bottom-4 left-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full"> Add to cart</button>
-              </div>
+              </Link>
             );
           })}
         </div>
@@ -58,6 +67,7 @@ export async function loader({params, context}) {
           id
           title
           tags
+          handle
           variants(first: 1) {
             edges {
               node {
